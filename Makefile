@@ -6,7 +6,7 @@ build:
 	docker build -t planitar/graphite .
 
 push:
-	docker build planitar/graphite
+	docker push planitar/graphite
 
 clean:
 	docker rmi -f planitar/graphite
