@@ -17,7 +17,8 @@ test:
 	@docker run planitar/graphite /bin/true
 	$(eval DOCKERID := $(shell docker run -dP planitar/graphite))
 	$(eval CARBON_PORT := $(shell docker port ${DOCKERID} 2003 | sed 's/^.*://'))
-	$(eval RENDER_PORT := $(shell docker port ${DOCKERID} 8080 | sed 's/^.*://'))
+	$(eval RENDER_PORT := $(shell docker port ${DOCKERID} 81 | sed 's/^.*://'))
+	$(eval GRAFANA_PORT := $(shell docker port ${DOCKERID} 80 | sed 's/^.*://'))
 	@sleep 3s
 	@echo Running the test...
 	@# Carbon cache overrides all received values in the interval with the
@@ -31,6 +32,13 @@ test:
 	  grep -q '^test.count,.*|.*1\.0,1\.0,1\.0,1\.0,1\.0'; then \
 	    echo 'Test failed...'; \
 	    curl -s 'http://localhost:${RENDER_PORT}/render?target=test.count&format=raw&from=-20seconds'; \
+	    docker rm -f ${DOCKERID}; \
+	    false; \
+	fi
+	if !  curl -s 'http://localhost:${GRAFANA_PORT}/' | \
+	  grep -q '<title>Grafana</title>'; then \
+	    echo 'Test failed...'; \
+	    curl -s 'http://localhost:${GRAFANA_PORT}/'; \
 	    docker rm -f ${DOCKERID}; \
 	    false; \
 	fi
