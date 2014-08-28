@@ -1,15 +1,19 @@
 # XXX no versioning of the docker image
 
+ifneq ($(NOCACHE),)
+  NOCACHEFLAG=--no-cache
+endif
+
 .PHONY: build push clean test
 
 build:
-	docker build -t planitar/graphite .
+	docker build ${NOCACHEFLAG} -t planitar/graphite .
 
 push:
 	docker push planitar/graphite
 
 clean:
-	docker rmi -f planitar/graphite
+	docker rmi -f planitar/graphite || true
 
 test:
 	@# XXX I'm sorry, mama...
