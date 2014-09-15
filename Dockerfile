@@ -1,6 +1,6 @@
 FROM planitar/base
 
-RUN apt-get install -y build-essential supervisor nginx-light curl && apt-get clean
+RUN apt-get install -y build-essential supervisor nginx-light && apt-get clean
 RUN apt-get install -y python-cairo libgcrypt11 python-virtualenv python-dev && apt-get clean
 
 RUN adduser --system --home /opt/graphite graphite
