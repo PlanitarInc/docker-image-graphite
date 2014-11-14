@@ -1,4 +1,5 @@
 # XXX no versioning of the docker image
+IMAGE_NAME=planitar/graphite
 
 ifneq ($(NOCACHE),)
   NOCACHEFLAG=--no-cache
@@ -7,19 +8,19 @@ endif
 .PHONY: build push clean test
 
 build:
-	docker build ${NOCACHEFLAG} -t planitar/graphite .
+	docker build ${NOCACHEFLAG} -t ${IMAGE_NAME} .
 
 push:
-	docker push planitar/graphite
+	docker push ${IMAGE_NAME}
 
 clean:
-	docker rmi -f planitar/graphite || true
+	docker rmi -f ${IMAGE_NAME} || true
 
 test:
 	@# XXX I'm sorry, mama...
 	@echo Booting the test docker container...
-	@docker run planitar/graphite /bin/true
-	$(eval DOCKERID := $(shell docker run -dP planitar/graphite))
+	@docker run ${IMAGE_NAME} /bin/true
+	$(eval DOCKERID := $(shell docker run -dP ${IMAGE_NAME}))
 	$(eval CARBON_PORT := $(shell docker port ${DOCKERID} 2003 | sed 's/^.*://'))
 	$(eval RENDER_PORT := $(shell docker port ${DOCKERID} 81 | sed 's/^.*://'))
 	$(eval GRAFANA_PORT := $(shell docker port ${DOCKERID} 80 | sed 's/^.*://'))
