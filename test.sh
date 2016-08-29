@@ -5,12 +5,12 @@ set -ex
 IMAGE_NAME=$1
 
 curl() {
-  docker run --rm -ti --net host planitar/base curl "$@"
+  docker run --rm --net host planitar/base curl "$@"
 }
 nc_send() {
   local line
   read line
-  docker run --rm -ti --net host planitar/base bash -c "echo $line | nc $1 $2"
+  docker run --rm --net host planitar/base bash -c "echo $line | nc $1 $2"
 }
 
 echo Booting the test docker container...
